@@ -33,7 +33,7 @@ def produce_contours(img, epsilon=10):
     contours = setup_contours(img, epsilon)
     contours = list(map(lambda x: x[0], contours[0]))
 
-    pairs = zip(contours, np.append(contours[1:], [contours[0]], axis=0))
+    pairs = list(zip(contours, np.append(contours[1:], [contours[0]], axis=0)))
 
     return pairs
 
