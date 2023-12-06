@@ -1,9 +1,12 @@
 import cv2
 from math import sqrt
 import numpy as np
+import sys
 from PIL import Image, ImageFilter
 
-original = cv2.imread("./test.jpg")
+original = cv2.imread(f"./data/isolated_cube{x[1] if len(x:=sys.argv) > 1 else 0}.jpg")
+
+original = cv2.rotate(original, cv2.ROTATE_90_CLOCKWISE)
 
 
 def fill_image(img, change=True):
@@ -34,9 +37,8 @@ def produce_contours(img, epsilon=10):
 
     pairs = zip(contours[0][:-1], contours[0][1:])
     new = sorted(pairs, key=lambda x: distance(x[0][0][0], x[0][0][1], x[1][0][0], x[1][0][1]), reverse=True)
-    print(new[:10])
 
-    for i, (c1, c2) in enumerate(new[:15]):
+    for i, (c1, c2) in enumerate(new[:]):
         print(i, c1, c2)
         temp = np.zeros(img.shape, np.uint8)
         cv2.line(temp, c1[0], c2[0], (255, 255, 255), 3, cv2.LINE_AA)
@@ -51,21 +53,20 @@ WIDTH, HEIGHT = 1488, 1530
 KERNEL_SIZE = x if (x := int((WIDTH + HEIGHT) / 30)) % 2 else (x + 1)
 print(KERNEL_SIZE)
 
-img = fill_image(original)
 
-# img = cv2.GaussianBlur(img, (KERNEL_SIZE, KERNEL_SIZE), 0)
-# cv2.imshow("blurred", img)
+img = cv2.GaussianBlur(original, (KERNEL_SIZE, KERNEL_SIZE), 0)
 
-# img = fill_image(img, change=False)
-# cv2.imshow("fuck", img)
+img = fill_image(img)
+
+cv2.imshow("filled", img)
 
 
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-pil_image = Image.fromarray(img)
+# img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# pil_image = Image.fromarray(img)
 
-pil_image = pil_image.filter(ImageFilter.ModeFilter(size=KERNEL_SIZE))
+# pil_image = pil_image.filter(ImageFilter.ModeFilter(size=KERNEL_SIZE))
 
-pil_image.save('output_image.png')
+# pil_image.save('output_image.png')
 
 
 # img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
@@ -74,18 +75,15 @@ pil_image.save('output_image.png')
 # cv2.imshow("test", img)
 
 
-
-from PIL import Image, ImageFilter
 # img = cv2.GaussianBlur(original, (KERNEL_SIZE, KERNEL_SIZE), 0)
 # cv2.imshow("blurred", img)
 
 
-
-# img = produce_contours(img, epsilon=KERNEL_SIZE)
-# cv2.imshow("sdf", img)
-
+img = produce_contours(img, epsilon=KERNEL_SIZE)
+cv2.imshow("sdf", img)
 
 
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
