@@ -8,7 +8,7 @@ from processing.parallel import find_parallel
 
 DEBUG = True
 
-original = cv2.imread(f"./data/isolated_cube{x[1] if len(x:=sys.argv) > 1 else 0}.jpg")
+original = cv2.imread(f"./data/cube{x[1] if len(x:=sys.argv) > 1 else 0}.jpg")
 
 img = original.copy()
 
