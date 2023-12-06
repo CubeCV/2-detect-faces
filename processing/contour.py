@@ -4,6 +4,10 @@ import numpy as np
 from math import sqrt
 
 
+WIDTH, HEIGHT = 1488, 1530
+KERNEL_SIZE = x if (x := int((WIDTH + HEIGHT) / 30)) % 2 else (x + 1)
+
+
 # INFO: utils
 def distance(x1, y1, x2, y2):
     return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -48,3 +52,20 @@ def show_bounding_lines(img, contours, blank=False):
         cv2.line(vis, c1, c2, (255, 255, 255), 3, cv2.LINE_AA)
 
     return vis
+
+
+def bounding_lines(img, debug=False):
+    original = img.copy()
+
+    img = mask_white(img)
+
+    img = cv2.GaussianBlur(img, (KERNEL_SIZE, KERNEL_SIZE), 0)
+    img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)[1]
+
+    contours = produce_contours(img, epsilon=KERNEL_SIZE // 2)
+
+    if debug:
+        final = show_bounding_lines(original, contours, blank=False)
+        cv2.imshow("final", final)
+
+    return contours
