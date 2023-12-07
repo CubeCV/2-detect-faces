@@ -27,6 +27,8 @@ def mask_white(img):
 def setup_contours(img, epsilon):
     cannied = cv2.Canny(img, threshold1=200, threshold2=600)
 
+    cv2.imshow("cannied", cannied)
+
     contours0, _ = cv2.findContours(cannied.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contours = [cv2.approxPolyDP(cnt, epsilon, True) for cnt in contours0]
 
@@ -59,8 +61,12 @@ def bounding_lines(img, debug=False):
 
     img = mask_white(img)
 
+    cv2.imshow("maksed", img)
+
     img = cv2.GaussianBlur(img, (KERNEL_SIZE, KERNEL_SIZE), 0)
     img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY)[1]
+
+    cv2.imshow("blur+threshold", img)
 
     contours = produce_contours(img, epsilon=KERNEL_SIZE // 2)
 

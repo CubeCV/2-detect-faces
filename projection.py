@@ -53,8 +53,9 @@ def find_corners(img, contours, parallel, debug=False):
 
             all_corners.append(corners)
 
-            for c in corners:
-                img = cv2.circle(img, c, 4, (255, 255, 255), 4)
+            if False:
+                for c in corners:
+                    img = cv2.circle(img, c, 16, (255, 255, 255), 16)
 
     if debug:
         print(list(faces))
@@ -72,12 +73,12 @@ def project(img, corners):
 
         destination = np.array([
             [0, 0],
-            [0, 200],
-            [200, 0],
-            [200, 200]], dtype="float32")
+            [0, 500],
+            [500, 0],
+            [500, 500]], dtype="float32")
 
         m = cv2.getPerspectiveTransform(c, destination)
 
-        output = cv2.warpPerspective(img, m, (200, 200))
+        output = cv2.warpPerspective(img, m, (500, 500))
 
         cv2.imshow(f"final{i}", output)
