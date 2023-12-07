@@ -19,11 +19,13 @@ def connect_parallel_lines(lines: list[tuple[int, int], tuple[int, int]]):
     return lines
 
 
-def project(img, contours, parallel, debug=False):
+def find_corners(img, contours, parallel, debug=False):
     faces = list(combinations(parallel, 2))
     paired_parallel_lines = connect_parallel_lines(faces)
 
     x = np.zeros((2,), np.float64)
+
+    all_corners = []
 
     for j in [0, 1, 2]:
         for i in [0, 1]:
@@ -49,7 +51,7 @@ def project(img, contours, parallel, debug=False):
                 edge2[1]
             ]
 
-            print(corners)
+            all_corners.append(corners)
 
             for c in corners:
                 img = cv2.circle(img, c, 4, (255, 255, 255), 4)
@@ -60,3 +62,22 @@ def project(img, contours, parallel, debug=False):
         print(x)
         img = cv2.circle(img, (int(x[0]) // 6, int(x[1]) // 6), 4, (0, 255, 255), 4)
         cv2.imshow("all", img)
+
+    return all_corners
+
+
+def project(img, corners):
+    for i, c in enumerate(corners):
+        c = np.array(c).astype('float32')
+
+        destination = np.array([
+            [0, 0],
+            [0, 200],
+            [200, 0],
+            [200, 200]], dtype="float32")
+
+        m = cv2.getPerspectiveTransform(c, destination)
+
+        output = cv2.warpPerspective(img, m, (200, 200))
+
+        cv2.imshow(f"final{i}", output)

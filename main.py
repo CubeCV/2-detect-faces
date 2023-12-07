@@ -4,7 +4,7 @@ import sys
 
 from contour import bounding_lines
 from parallel import find_parallel
-from projection import project
+from projection import find_corners, project
 
 
 DEBUG = True
@@ -16,9 +16,9 @@ img = original.copy()
 contours = bounding_lines(img, debug=DEBUG)
 parallel = find_parallel(contours, img, debug=DEBUG)
 
-project(img, contours, parallel, debug=DEBUG)
+all_corners = find_corners(img, contours, parallel, debug=DEBUG)
 
-print(parallel)
+project(img, all_corners)
 
 
 # INFO: keep windows
