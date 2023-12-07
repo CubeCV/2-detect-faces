@@ -2,8 +2,9 @@ import cv2
 import numpy as np
 import sys
 
-from processing.contour import bounding_lines
-from processing.parallel import find_parallel
+from contour import bounding_lines
+from parallel import find_parallel
+from projection import project
 
 
 DEBUG = True
@@ -14,6 +15,8 @@ img = original.copy()
 
 contours = bounding_lines(img, debug=DEBUG)
 parallel = find_parallel(contours, img, debug=DEBUG)
+
+project(img, contours, parallel, debug=DEBUG)
 
 print(parallel)
 
